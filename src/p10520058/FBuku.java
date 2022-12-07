@@ -4,17 +4,188 @@
  */
 package p10520058;
 
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author admin
  */
 public class FBuku extends javax.swing.JFrame {
 
+    Connection conn;
+    
+    DefaultTableModel tabModel;
+    
     /**
      * Creates new form FBuku
      */
     public FBuku() {
         initComponents();
+        setupConnection();
+        setupDataTable();
+    }
+    
+    private void setupConnection() {
+        conn = Koneksi.getConnection();
+    }
+    
+    private void setupDataTable() {
+        String[] columnTitle = {"Kode Buku", "Judul Buku", "Penulis", "Penerbit", "Tahun Terbit", "Status"};
+        tabModel = new DefaultTableModel(null, columnTitle){
+            boolean[] canEdit = new boolean [] { false, false, false, false};
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        };
+        
+        bookDataTable.setModel(tabModel);
+        bookDataTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        bookDataTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+        bookDataTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+        bookDataTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+        bookDataTable.getColumnModel().getColumn(3).setPreferredWidth(100);
+        bookDataTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+        bookDataTable.getColumnModel().getColumn(5).setPreferredWidth(100);
+        getBooks();
+    }
+    
+     private void getDataFromDataTable() {        
+        int row = bookDataTable.getSelectedRow();
+        String bookCode = tabModel.getValueAt(row, 0).toString();
+        String bookTitle = tabModel.getValueAt(row, 1).toString();
+        String bookWriter = tabModel.getValueAt(row, 2).toString();
+        String bookPublisher = tabModel.getValueAt(row, 3).toString();
+        String bookPublishYear = tabModel.getValueAt(row, 4).toString();
+        String bookStatus = tabModel.getValueAt(row, 5).toString();
+    
+        codeField.setText(bookCode);
+        titleField.setText(bookTitle);
+        writerField.setText(bookWriter);
+        publisherField.setText(bookPublisher);
+        publishYearField.setText(bookPublishYear);
+        statusField.setText(bookStatus);
+    }
+    
+    /**
+     * Database connection call
+     */
+    
+    private void getBooks() {
+        try {
+            String query = "SELECT * FROM buku";
+            PreparedStatement statement = conn.prepareStatement(query);
+            ResultSet rs = statement.executeQuery();
+            String bookCode, bookTitle, bookWriter, bookPublisher, bookPublishYear, bookStatus;
+            while (rs.next()) {
+                bookCode = rs.getString("kode_buku");
+                bookTitle = rs.getString("judul_buku");
+                bookWriter = rs.getString("penulis");
+                bookPublisher = rs.getString("penerbit");
+                bookPublishYear = rs.getString("tahun_terbit");
+                bookStatus = rs.getString("status");
+                Object Data[] = {bookCode, bookTitle, bookWriter, bookPublisher, bookPublishYear, bookStatus};
+                tabModel.addRow(Data);
+            }
+        } catch (SQLException sqlE) {
+            System.out.println("Proses Query Gagal = " + sqlE);
+            System.exit(0);
+        } catch (Exception e) {
+            System.out.println("Koneksi Access Gagal " + e.getMessage());
+            System.exit(0);
+        }
+    }
+    
+    private void addBook() {
+        try {
+            String command = "INSERT INTO buku VALUES(?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = conn.prepareStatement(command);
+            statement.setString(1, codeField.getText());
+            statement.setString(2, titleField.getText());
+            statement.setString(3, writerField.getText());
+            statement.setString(4, publisherField.getText());
+            statement.setString(5, publishYearField.getText());
+            statement.setString(6, statusField.getText());
+            int rs = statement.executeUpdate();
+            if (rs > 0) {
+               JOptionPane.showMessageDialog(this,"Input Berhasil");
+               setupDataTable(); 
+            }
+            clearTextField();
+        } catch (SQLException sqle) {
+            JOptionPane.showMessageDialog(this,"Input Gagal = " + sqle.getMessage());
+        } catch (HeadlessException e) {
+            JOptionPane.showMessageDialog(this,"Koneksi Gagal " + e.getMessage());
+        }
+    }
+    
+    private void updateBook() {
+        int ok = JOptionPane.showConfirmDialog(this,
+        "Anda Yakin Ingin Mengubah Data\n Dengan Kode Buku = '" + codeField.getText() +
+        "'", "Konfirmasi ",JOptionPane.YES_NO_OPTION);
+        if (ok == 0) {
+            try {
+                String command = "UPDATE buku SET judul_buku = ?, penulis = ?, penerbit = ?, tahun_terbit = ?, status = ? WHERE kode_buku = ?";
+                PreparedStatement statement = conn.prepareStatement(command);
+                
+                statement.setString(1, titleField.getText());
+                statement.setString(2, writerField.getText());
+                statement.setString(3, publisherField.getText());
+                statement.setString(4, publishYearField.getText());
+                statement.setString(5, statusField.getText());
+                statement.setString(6, codeField.getText());
+                
+                int rs = statement.executeUpdate();
+                if (rs > 0) {
+                    JOptionPane.showMessageDialog(this,"Edit Data Berhasil");
+                    setupDataTable();
+                }
+                clearTextField();
+                
+            } catch (SQLException sqle) {
+                JOptionPane.showMessageDialog(this,"Input Gagal = " + sqle.getMessage());
+            } catch (HeadlessException e) {
+                JOptionPane.showMessageDialog(this,"Koneksi Gagal " + e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Text field modifier
+     */
+    
+    private void clearTextField() {
+        codeField.setText("");
+        titleField.setText("");
+        writerField.setText("");
+        publisherField.setText("");
+        publishYearField.setText("");
+        statusField.setText("");
+    }
+    
+    private void enableTextField() {
+        codeField.setEnabled(true);
+        titleField.setEnabled(true);
+        writerField.setEnabled(true);
+        publisherField.setEnabled(true);
+        publishYearField.setEnabled(true);
+        statusField.setEnabled(true);
+    }
+    
+    private void disableTextField() {
+        codeField.setEnabled(false);
+        titleField.setEnabled(false);
+        writerField.setEnabled(false);
+        publisherField.setEnabled(false);
+        publishYearField.setEnabled(false);
+        statusField.setEnabled(false);
     }
 
     /**
@@ -46,7 +217,7 @@ public class FBuku extends javax.swing.JFrame {
         deleteButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        bookData = new javax.swing.JTable();
+        bookDataTable = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         searchField = new javax.swing.JTextField();
@@ -83,6 +254,11 @@ public class FBuku extends javax.swing.JFrame {
         });
 
         editButton.setText("Edit");
+        editButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editButtonActionPerformed(evt);
+            }
+        });
 
         cancelButton.setText("Batal");
 
@@ -90,7 +266,7 @@ public class FBuku extends javax.swing.JFrame {
 
         closeButton.setText("Tutup");
 
-        bookData.setModel(new javax.swing.table.DefaultTableModel(
+        bookDataTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -101,7 +277,7 @@ public class FBuku extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(bookData);
+        jScrollPane1.setViewportView(bookDataTable);
 
         jLabel8.setText("Cari Berdasarkan");
 
@@ -125,15 +301,15 @@ public class FBuku extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(searchButton))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(saveButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(addButton)
                         .addGap(18, 18, 18)
                         .addComponent(editButton)
                         .addGap(18, 18, 18)
-                        .addComponent(cancelButton)
+                        .addComponent(saveButton)
                         .addGap(18, 18, 18)
                         .addComponent(deleteButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(cancelButton)
                         .addGap(18, 18, 18)
                         .addComponent(closeButton))
                     .addGroup(layout.createSequentialGroup()
@@ -184,15 +360,15 @@ public class FBuku extends javax.swing.JFrame {
                     .addComponent(writerField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addComponent(statusField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(saveButton)
-                    .addComponent(addButton)
                     .addComponent(editButton)
                     .addComponent(cancelButton)
-                    .addComponent(deleteButton)
-                    .addComponent(closeButton))
-                .addGap(18, 18, 18)
+                    .addComponent(closeButton)
+                    .addComponent(addButton)
+                    .addComponent(saveButton)
+                    .addComponent(deleteButton))
+                .addGap(33, 33, 33)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -200,19 +376,31 @@ public class FBuku extends javax.swing.JFrame {
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchButton))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // TODO add your handling code here:
+        if (saveButton.getText().equalsIgnoreCase("Simpan")) {
+            addBook();
+        } else {
+            updateBook();
+        }
+        
+        disableTextField();
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        // TODO add your handling code here:
+        enableTextField();
     }//GEN-LAST:event_addButtonActionPerformed
+
+    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+        getDataFromDataTable();
+        saveButton.setText("Update");
+        enableTextField();
+    }//GEN-LAST:event_editButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -251,7 +439,7 @@ public class FBuku extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
-    private javax.swing.JTable bookData;
+    private javax.swing.JTable bookDataTable;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton closeButton;
     private javax.swing.JTextField codeField;

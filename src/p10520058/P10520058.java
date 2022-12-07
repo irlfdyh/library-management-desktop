@@ -19,8 +19,11 @@ public class P10520058 {
 //        FAnggota a = new FAnggota();
 //        a.setVisible(true);
         
-        FPeminjaman fPeminjaman = new FPeminjaman();
-        fPeminjaman.setVisible(true);
+//        FPeminjaman fPeminjaman = new FPeminjaman();
+//        fPeminjaman.setVisible(true);
+        
+        FBuku fBuku = new FBuku();
+        fBuku.setVisible(true);
     }
    
 }
