@@ -14,17 +14,17 @@ import java.sql.SQLException;
  * @author Mahasiswa
  */
 public class Koneksi {
-    private static final String host="localhost";
-    private static final String db="perpus_10520058";
-    private static final String user="root";
-    private static final String pass="";
+    private static final String HOST="localhost";
+    private static final String DB="perpus_10520058";
+    private static final String USER="root";
+    private static final String PASS="";
     private static Connection conn;
 
     public static Connection getConnection(){
         if (conn == null) {
             try{
                 Class.forName("com.mysql.cj.jdbc.Driver");
-                conn = DriverManager.getConnection("jdbc:mysql://"+host+"/"+db,user,pass);
+                conn = DriverManager.getConnection("jdbc:mysql://"+HOST+"/"+DB,USER,PASS);
             }catch(ClassNotFoundException cnfe){
                 System.out.println("Driver Tidak Ditemukan ="+ cnfe);
             } catch(SQLException ex) {
