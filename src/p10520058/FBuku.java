@@ -157,6 +157,33 @@ public class FBuku extends javax.swing.JFrame {
         }
     }
     
+    private void deleteBook() {
+        getDataFromDataTable();
+        
+        int ok = JOptionPane.showConfirmDialog(
+                this,
+                "Anda Yakin Ingin Menghapus Data\nDengan Kode Buku = '" + codeField.getText() +"'",
+                "Konfirmasi Menghapus Data",
+                JOptionPane.YES_NO_OPTION
+        );
+        
+        if (ok == 0) {
+            try {
+                String command = "DELETE FROM buku WHERE kode_buku = ?";
+                PreparedStatement st = conn.prepareStatement(command);
+                st.setString(1, codeField.getText());
+                int rs=st.executeUpdate();
+                if(rs > 0) {
+                    setupDataTable();
+                    JOptionPane.showMessageDialog(this,"Data Berhasil dihapus");
+                }
+                clearTextField();
+            } catch (HeadlessException | SQLException se) {
+                JOptionPane.showMessageDialog(this,"Gagal Hapus Data.. ");
+            }
+        }   
+    }
+    
     /**
      * Text field modifier
      */
@@ -268,6 +295,11 @@ public class FBuku extends javax.swing.JFrame {
         });
 
         deleteButton.setText("Hapus");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
 
         closeButton.setText("Tutup");
 
@@ -289,6 +321,11 @@ public class FBuku extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kode Buku", "Judul Buku", "Penulis" }));
 
         searchButton.setText("Cari");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
 
         statusField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tersedia", "Tidak Tersedia" }));
 
@@ -445,6 +482,14 @@ public class FBuku extends javax.swing.JFrame {
         deleteButton.setEnabled(true);
         closeButton.setEnabled(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        deleteBook();
+    }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchButtonActionPerformed
 
     /**
      * @param args the command line arguments
