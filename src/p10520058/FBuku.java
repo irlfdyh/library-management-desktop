@@ -128,7 +128,7 @@ public class FBuku extends javax.swing.JFrame {
     
     private void updateBook() {
         int ok = JOptionPane.showConfirmDialog(this,
-        "Anda Yakin Ingin Mengubah Data\n Dengan Kode Buku = '" + statusField.getSelectedItem().toString() +
+        "Anda Yakin Ingin Mengubah Data\n Dengan Kode Buku = '" + codeField.getText() +
         "'", "Konfirmasi ",JOptionPane.YES_NO_OPTION);
         if (ok == 0) {
             try {
