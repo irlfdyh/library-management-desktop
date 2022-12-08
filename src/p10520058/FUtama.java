@@ -4,11 +4,20 @@
  */
 package p10520058;
 
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author admin
  */
 public class FUtama extends javax.swing.JFrame {
+    
+    Connection conn;
 
     /**
      * Creates new form FUtama
@@ -26,66 +35,171 @@ public class FUtama extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        loginButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
+        txtUsername = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JPasswordField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        menuItemLogin = new javax.swing.JMenuItem();
+        menuItemLogout = new javax.swing.JMenuItem();
+        menuItemExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        menuItemMember = new javax.swing.JMenuItem();
+        menuItemBook = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
+        menuItemBorrowing = new javax.swing.JMenuItem();
+        menuItemReturning = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenuItem9 = new javax.swing.JMenuItem();
+        menuItemBorrowingReport = new javax.swing.JMenuItem();
+        menuItemReturningReport = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(0, 0, 51));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("LOGIN");
+
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Username");
+
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Password");
+
+        loginButton.setText("Login");
+        loginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginButtonActionPerformed(evt);
+            }
+        });
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(143, 143, 143)
+                .addComponent(jLabel1)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(loginButton)
+                .addGap(18, 18, 18)
+                .addComponent(cancelButton)
+                .addGap(101, 101, 101))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(45, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addGap(20, 20, 20)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel1)
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(19, 19, 19)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(loginButton)
+                    .addComponent(cancelButton))
+                .addContainerGap(44, Short.MAX_VALUE))
+        );
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel5.setText("APLIKASI SISTEM INFORMASI PERPUSTAKAAN");
+
         jMenu1.setText("File");
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem1.setText("Login");
-        jMenu1.add(jMenuItem1);
+        menuItemLogin.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuItemLogin.setText("Login");
+        menuItemLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemLoginActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuItemLogin);
 
-        jMenuItem2.setText("Logout");
-        jMenu1.add(jMenuItem2);
+        menuItemLogout.setText("Logout");
+        jMenu1.add(menuItemLogout);
 
-        jMenuItem3.setText("Exit");
-        jMenu1.add(jMenuItem3);
+        menuItemExit.setText("Exit");
+        jMenu1.add(menuItemExit);
 
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Data");
 
-        jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem4.setText("Anggota");
-        jMenu2.add(jMenuItem4);
+        menuItemMember.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuItemMember.setText("Anggota");
+        menuItemMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemMemberActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuItemMember);
 
-        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem5.setText("Buku");
-        jMenu2.add(jMenuItem5);
+        menuItemBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuItemBook.setText("Buku");
+        menuItemBook.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemBookActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuItemBook);
 
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Pelayanan");
 
-        jMenuItem6.setText("Peminjaman");
-        jMenu3.add(jMenuItem6);
+        menuItemBorrowing.setText("Peminjaman");
+        menuItemBorrowing.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemBorrowingActionPerformed(evt);
+            }
+        });
+        jMenu3.add(menuItemBorrowing);
 
-        jMenuItem7.setText("Pengembalian");
-        jMenu3.add(jMenuItem7);
+        menuItemReturning.setText("Pengembalian");
+        jMenu3.add(menuItemReturning);
 
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Laporan");
 
-        jMenuItem8.setText("Peminjaman");
-        jMenu4.add(jMenuItem8);
+        menuItemBorrowingReport.setText("Peminjaman");
+        jMenu4.add(menuItemBorrowingReport);
 
-        jMenuItem9.setText("Pengembalian");
-        jMenu4.add(jMenuItem9);
+        menuItemReturningReport.setText("Pengembalian");
+        jMenu4.add(menuItemReturningReport);
 
         jMenuBar1.add(jMenu4);
 
@@ -95,15 +209,96 @@ public class FUtama extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addGap(40, 40, 40))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(51, 51, 51)
+                        .addComponent(jLabel5))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(110, 110, 110)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 277, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(jLabel4)
+                .addGap(43, 43, 43)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addComponent(jLabel5)
+                .addGap(25, 25, 25))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void menuItemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLoginActionPerformed
+        jPanel1.setVisible(false);
+    }//GEN-LAST:event_menuItemLoginActionPerformed
+
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        String sql;
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        try { 
+            sql ="SELECT * FROM pengguna WHERE username ='" + txtUsername.getText() + "'";
+            PreparedStatement st = conn.prepareStatement(sql);
+            ResultSet rs =st.executeQuery(); 
+            if (rs.next()) {
+                String pass = rs.getString("password");
+                String bagian = rs.getString("bagian");
+                if (password.equals(pass)){
+                    JOptionPane.showMessageDialog(this, "Login Berhasil");
+                    if (bagian.equals("Sirkulasi")) {
+                        jMenu2.setVisible(false); // menu Data
+                        jMenu3.setVisible(true); // menu Pelayanan
+                        jMenu4.setVisible(true); // menu Laporan
+                        menuItemLogin.setEnabled(false); // menu item Login
+                        menuItemLogout.setEnabled(true); // menu item Logout
+                        jPanel1.setVisible(false);
+                    } else {
+                        jMenu2.setVisible(true); // menu Data
+                        jMenu3.setVisible(true); // menu Pelayanan
+                        jMenu4.setVisible(true); // menu Laporan
+                        menuItemLogin.setEnabled(false); // menu item Login
+                        menuItemLogout.setEnabled(true); // menu item Logout
+                        jPanel1.setVisible(false);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Password tidak sesuai");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Username " + username + " tidak ditemukan!");
+            }
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this,e.getMessage());
+        }
+    }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+         jPanel1.setVisible(false);
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void menuItemMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemMemberActionPerformed
+        FAnggota a = new FAnggota();
+        a.setVisible(true);
+    }//GEN-LAST:event_menuItemMemberActionPerformed
+
+    private void menuItemBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemBookActionPerformed
+        FBuku fBuku = new FBuku();
+        fBuku.setVisible(true);
+    }//GEN-LAST:event_menuItemBookActionPerformed
+
+    private void menuItemBorrowingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemBorrowingActionPerformed
+        FPeminjaman fPeminjaman = new FPeminjaman();
+        fPeminjaman.setVisible(true);
+    }//GEN-LAST:event_menuItemBorrowingActionPerformed
 
     /**
      * @param args the command line arguments
@@ -141,19 +336,29 @@ public class FUtama extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton loginButton;
+    private javax.swing.JMenuItem menuItemBook;
+    private javax.swing.JMenuItem menuItemBorrowing;
+    private javax.swing.JMenuItem menuItemBorrowingReport;
+    private javax.swing.JMenuItem menuItemExit;
+    private javax.swing.JMenuItem menuItemLogin;
+    private javax.swing.JMenuItem menuItemLogout;
+    private javax.swing.JMenuItem menuItemMember;
+    private javax.swing.JMenuItem menuItemReturning;
+    private javax.swing.JMenuItem menuItemReturningReport;
+    private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }

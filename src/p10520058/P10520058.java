@@ -15,15 +15,8 @@ public class P10520058 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-//        FAnggota a = new FAnggota();
-//        a.setVisible(true);
-        
-        FPeminjaman fPeminjaman = new FPeminjaman();
-        fPeminjaman.setVisible(true);
-        
-//        FBuku fBuku = new FBuku();
-//        fBuku.setVisible(true);
+        FUtama fUtama = new FUtama();
+        fUtama.setVisible(true);
     }
    
 }
