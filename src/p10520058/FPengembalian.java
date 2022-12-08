@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,6 +21,9 @@ public class FPengembalian extends javax.swing.JFrame {
     Connection conn;
     
     DefaultTableModel tabModel;
+    
+    ArrayList<String> tempBookCodes = new ArrayList<>();
+    String tempLoanNo = new String();
 
     /**
      * Creates new form FPengembalian
@@ -177,6 +181,11 @@ public class FPengembalian extends javax.swing.JFrame {
         );
 
         confirmButton.setText("Konfirmasi");
+        confirmButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirmButtonActionPerformed(evt);
+            }
+        });
 
         cancelButton.setText("Batal");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -252,6 +261,7 @@ public class FPengembalian extends javax.swing.JFrame {
         if (evt.getKeyCode() == 10) {
             String loanNumber = loanNumberField.getText();
             if (!loanNumber.isBlank()) {
+                tempLoanNo = loanNumber;
                 getRequiredData(loanNumber);
             } else {
                 JOptionPane.showMessageDialog(
@@ -267,6 +277,10 @@ public class FPengembalian extends javax.swing.JFrame {
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         clearAssignedData();
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
+        updateLoanAndBooksData();
+    }//GEN-LAST:event_confirmButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -360,7 +374,7 @@ public class FPengembalian extends javax.swing.JFrame {
         ResultSet result = statement.executeQuery();
         
         while (result.next()) {
-            assignBookDataTable(result);
+            assignAndSaveResult(result);
         }
     }
     
@@ -377,15 +391,41 @@ public class FPengembalian extends javax.swing.JFrame {
         }
     }
     
+    
+    private void updateLoanData() throws SQLException {
+        String command = "UPDATE detail_pinjam SET status = ? WHERE no_pinjam = ?";
+        PreparedStatement statement = conn.prepareStatement(command);
+        statement.setString(1, "1");
+        statement.setString(2, tempLoanNo);
+        statement.executeUpdate();
+    }
+    
+    private void updateBookData(String bookCode) throws SQLException {
+        String command = "UPDATE buku SET status = ? WHERE kode_buku = ?";
+        PreparedStatement statement = conn.prepareStatement(command);
+        statement.setString(1, "Tersedia");
+        statement.setString(2, bookCode);
+        statement.executeUpdate();
+    }
+    
     /**
      * Utility method
      */
+    
+    private void assignAndSaveResult(ResultSet result) throws SQLException {
+        assignBookDataTable(result);
+        saveResult(result);
+    }
     
     private void assignBookDataTable(ResultSet result) throws SQLException {
         String bookCode = result.getString("kode_buku");
         String bookTitle = result.getString("judul_buku");
         Object Data[] = {bookCode, bookTitle};
         tabModel.addRow(Data);
+    }
+    
+    private void saveResult(ResultSet result) throws SQLException {
+        tempBookCodes.add(result.getString("kode_buku"));
     }
     
     private void clearAssignedData() {
@@ -398,6 +438,43 @@ public class FPengembalian extends javax.swing.JFrame {
         for (int i = 0; i < row; i ++) {
             tabModel.removeRow(0);
         }
+    }
+    
+    private void updateLoanAndBooksData() {
+        try {
+            updateBooksData();
+            updateLoanData();
+            JOptionPane.showMessageDialog(
+                this, 
+                "Berhasil mengubah status!",
+                "Informasi",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+            clearAssignedData();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(
+                this, 
+                e.getMessage(),
+                "Terjadi Kesalahan",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
+    
+    private void updateBooksData() {
+        tempBookCodes.forEach((code) -> {
+            try {
+                updateBookData(code);    
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(
+                    this, 
+                    e.getMessage(),
+                    "Terjadi Kesalahan",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+          
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
