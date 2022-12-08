@@ -218,6 +218,11 @@ public class FUtama extends javax.swing.JFrame {
         jMenu3.add(menuItemBorrowing);
 
         menuItemReturning.setText("Pengembalian");
+        menuItemReturning.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemReturningActionPerformed(evt);
+            }
+        });
         jMenu3.add(menuItemReturning);
 
         jMenuBar1.add(jMenu3);
@@ -354,6 +359,11 @@ public class FUtama extends javax.swing.JFrame {
     private void menuItemLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLogoutActionPerformed
         initializeState();
     }//GEN-LAST:event_menuItemLogoutActionPerformed
+
+    private void menuItemReturningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemReturningActionPerformed
+        FPengembalian fPengembalian = new FPengembalian();
+        fPengembalian.setVisible(true);
+    }//GEN-LAST:event_menuItemReturningActionPerformed
 
     /**
      * @param args the command line arguments
