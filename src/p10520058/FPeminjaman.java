@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -345,15 +347,62 @@ public class FPeminjaman extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteBookButtonActionPerformed
 
     private void addLoanButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLoanButtonActionPerformed
-        // TODO add your handling code here:
+        Date tgl_sekarang=new Date();
+        SimpleDateFormat format=new SimpleDateFormat("y-m-d");
+        String tgl=format.format(tgl_sekarang);
+        txtTglPinjam.setText(tgl);
+        txtNoPinjam.setEnabled(true);
+        txtNoAnggota.setEnabled(true);
+        bookCodeField.setEnabled(true);
     }//GEN-LAST:event_addLoanButtonActionPerformed
 
     private void saveLoanButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveLoanButtonActionPerformed
-        // TODO add your handling code here:
+        try {
+            if (txtNama.getText().isEmpty() || tabModel.getRowCount()==0 ) {
+                JOptionPane.showMessageDialog(this,"Silahkan Input Anggota dan Buku");
+            } else {
+                // Menyimpan ke Tabel Pinjam
+                String sql="INSERT  INTO pinjam VALUES(?, ?, ?)";
+                PreparedStatement st=conn.prepareStatement(sql);
+                st.setString(1,txtNoPinjam.getText());
+                st.setString(2,txtTglPinjam.getText());
+                st.setString(3,txtNoAnggota.getText());
+                int rs = st.executeUpdate();
+                String KodeBuku; 
+                int rs2 = 0;
+                int jum = tabModel.getRowCount();
+                for (int i=0; i < jum; i++) {
+                    // Menyimpan Ke detail Pinjam
+                    String sql2 = "INSERT INTO detail_pinjam VALUES(?, ?, ?)";
+                    PreparedStatement st2 = conn.prepareStatement(sql2);
+                    KodeBuku = tabModel.getValueAt(i, 0).toString();
+                    st2.setString(1,txtNoPinjam.getText());
+                    st2.setString(2,KodeBuku);
+                    st2.setString(3,"0");
+                    rs2= st2.executeUpdate();
+                    // Merubah status Buku
+                    
+                    String sql3="UPDATE buku SET status = ? WHERE kode_buku = ?";
+                    PreparedStatement st3 = conn.prepareStatement(sql3);
+                    st3.setString(1,"Tidak Tersedia");
+                    st3.setString(2,KodeBuku);
+                    st3.executeUpdate();
+                }
+                if ((rs > 0) && (rs2 > 0)) {
+                    JOptionPane.showMessageDialog(this,"Input Berhasil");
+                    clearTextField();
+                } else {
+                    JOptionPane.showMessageDialog(this,"Input Gagal");
+                    conn.close();
+                }
+            }
+        } catch (HeadlessException | SQLException e) {
+            System.out.println("Exception " +e );
+        }
     }//GEN-LAST:event_saveLoanButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        // TODO add your handling code here:
+        clearTextField();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
@@ -415,6 +464,25 @@ public class FPeminjaman extends javax.swing.JFrame {
         bookDataTable.setModel(tabModel);
         bookDataTable.getColumnModel().getColumn(0).setPreferredWidth(100);
         bookDataTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+    }
+    
+    private void clearTextField() {
+        txtNoPinjam.setText("");
+        txtNoAnggota.setText("");
+        txtTglPinjam.setText("");
+        txtNama.setText("");
+        bookCodeField.setText("");
+        bookTitleField.setText("");
+        bookStatusField.setText("");
+        
+        int row=tabModel.getRowCount();
+        for(int i = 0; i < row; i++) {
+            tabModel.removeRow(0);
+        }
+        
+        txtNoPinjam.setEnabled(false);
+        txtNoAnggota.setEnabled(false);
+        bookCodeField.setEnabled(false);
     }
     
     /**
