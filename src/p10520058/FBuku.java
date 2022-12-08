@@ -349,6 +349,11 @@ public class FBuku extends javax.swing.JFrame {
         });
 
         closeButton.setText("Tutup");
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeButtonActionPerformed(evt);
+            }
+        });
 
         bookDataTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -551,6 +556,10 @@ public class FBuku extends javax.swing.JFrame {
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         getBooks();
     }//GEN-LAST:event_refreshButtonActionPerformed
+
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+        this.setVisible(false);
+    }//GEN-LAST:event_closeButtonActionPerformed
 
     /**
      * @param args the command line arguments

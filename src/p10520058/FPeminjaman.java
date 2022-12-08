@@ -406,7 +406,7 @@ public class FPeminjaman extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
-        // TODO add your handling code here:
+        this.setVisible(false);
     }//GEN-LAST:event_closeButtonActionPerformed
 
     private void txtNoAnggotaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNoAnggotaKeyPressed
