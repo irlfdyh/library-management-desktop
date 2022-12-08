@@ -24,6 +24,11 @@ public class FUtama extends javax.swing.JFrame {
      */
     public FUtama() {
         initComponents();
+        setupConnection();
+    }
+    
+    private void setupConnection() {
+        conn = Koneksi.getConnection();
     }
 
     /**
@@ -149,6 +154,11 @@ public class FUtama extends javax.swing.JFrame {
         jMenu1.add(menuItemLogin);
 
         menuItemLogout.setText("Logout");
+        menuItemLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemLogoutActionPerformed(evt);
+            }
+        });
         jMenu1.add(menuItemLogout);
 
         menuItemExit.setText("Exit");
@@ -270,6 +280,8 @@ public class FUtama extends javax.swing.JFrame {
                         menuItemLogout.setEnabled(true); // menu item Logout
                         jPanel1.setVisible(false);
                     }
+                    txtUsername.setText("");
+                    txtPassword.setText("");
                 } else {
                     JOptionPane.showMessageDialog(this, "Password tidak sesuai");
                 }
@@ -299,6 +311,15 @@ public class FUtama extends javax.swing.JFrame {
         FPeminjaman fPeminjaman = new FPeminjaman();
         fPeminjaman.setVisible(true);
     }//GEN-LAST:event_menuItemBorrowingActionPerformed
+
+    private void menuItemLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLogoutActionPerformed
+        jMenu2.setVisible(true); // menu Data
+        jMenu3.setVisible(true); // menu Pelayanan
+        jMenu4.setVisible(true); // menu Laporan
+        menuItemLogin.setEnabled(true); // menu item Login
+        menuItemLogout.setEnabled(false); // menu item Logout
+        jPanel1.setVisible(true);
+    }//GEN-LAST:event_menuItemLogoutActionPerformed
 
     /**
      * @param args the command line arguments
