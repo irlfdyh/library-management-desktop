@@ -71,7 +71,7 @@ public class FBuku extends javax.swing.JFrame {
         writerField.setText(bookWriter);
         publisherField.setText(bookPublisher);
         publishYearField.setText(bookPublishYear);
-        statusField.setText(bookStatus);
+        statusField.setSelectedItem(bookStatus);
     }
     
     /**
@@ -112,7 +112,7 @@ public class FBuku extends javax.swing.JFrame {
             statement.setString(3, writerField.getText());
             statement.setString(4, publisherField.getText());
             statement.setString(5, publishYearField.getText());
-            statement.setString(6, statusField.getText());
+            statement.setString(6, statusField.getSelectedItem().toString());
             int rs = statement.executeUpdate();
             if (rs > 0) {
                JOptionPane.showMessageDialog(this,"Input Berhasil");
@@ -128,7 +128,7 @@ public class FBuku extends javax.swing.JFrame {
     
     private void updateBook() {
         int ok = JOptionPane.showConfirmDialog(this,
-        "Anda Yakin Ingin Mengubah Data\n Dengan Kode Buku = '" + codeField.getText() +
+        "Anda Yakin Ingin Mengubah Data\n Dengan Kode Buku = '" + statusField.getSelectedItem().toString() +
         "'", "Konfirmasi ",JOptionPane.YES_NO_OPTION);
         if (ok == 0) {
             try {
@@ -139,7 +139,7 @@ public class FBuku extends javax.swing.JFrame {
                 statement.setString(2, writerField.getText());
                 statement.setString(3, publisherField.getText());
                 statement.setString(4, publishYearField.getText());
-                statement.setString(5, statusField.getText());
+                statement.setString(5, statusField.getSelectedItem().toString());
                 statement.setString(6, codeField.getText());
                 
                 int rs = statement.executeUpdate();
@@ -167,7 +167,7 @@ public class FBuku extends javax.swing.JFrame {
         writerField.setText("");
         publisherField.setText("");
         publishYearField.setText("");
-        statusField.setText("");
+        statusField.setSelectedIndex(0);
     }
     
     private void enableTextField() {
@@ -210,7 +210,6 @@ public class FBuku extends javax.swing.JFrame {
         writerField = new javax.swing.JTextField();
         publisherField = new javax.swing.JTextField();
         publishYearField = new javax.swing.JTextField();
-        statusField = new javax.swing.JTextField();
         addButton = new javax.swing.JButton();
         editButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -222,6 +221,7 @@ public class FBuku extends javax.swing.JFrame {
         jComboBox1 = new javax.swing.JComboBox<>();
         searchField = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
+        statusField = new javax.swing.JComboBox<>();
 
         jLabel7.setText("jLabel7");
 
@@ -261,6 +261,11 @@ public class FBuku extends javax.swing.JFrame {
         });
 
         cancelButton.setText("Batal");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         deleteButton.setText("Hapus");
 
@@ -284,6 +289,8 @@ public class FBuku extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kode Buku", "Judul Buku", "Penulis" }));
 
         searchButton.setText("Cari");
+
+        statusField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tersedia", "Tidak Tersedia" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -332,11 +339,11 @@ public class FBuku extends javax.swing.JFrame {
                             .addComponent(jLabel6)
                             .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(publisherField, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(publisherField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(publishYearField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(statusField)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))
+                            .addComponent(statusField, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane1))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -390,17 +397,54 @@ public class FBuku extends javax.swing.JFrame {
         }
         
         disableTextField();
+        
+        addButton.setEnabled(true);
+        saveButton.setEnabled(false);
+        editButton.setEnabled(true);
+        cancelButton.setEnabled(false);
+        deleteButton.setEnabled(true);
+        closeButton.setEnabled(true); 
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         enableTextField();
+        clearTextField();  
+        
+        addButton.setEnabled(false);
+        saveButton.setEnabled(true);
+        editButton.setEnabled(false);
+        cancelButton.setEnabled(true);
+        deleteButton.setEnabled(false);
+        closeButton.setEnabled(false);
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         getDataFromDataTable();
-        saveButton.setText("Update");
         enableTextField();
+        saveButton.setText("Update");
+        
+        addButton.setEnabled(false);
+        saveButton.setEnabled(true);
+        editButton.setEnabled(false);
+        cancelButton.setEnabled(true);
+        deleteButton.setEnabled(false);
+        closeButton.setEnabled(false);
+        
+        getDataFromDataTable();
     }//GEN-LAST:event_editButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        enableTextField();
+        clearTextField();
+        saveButton.setText("Simpan");
+        
+        addButton.setEnabled(true);
+        saveButton.setEnabled(false);
+        editButton.setEnabled(true);
+        cancelButton.setEnabled(false);
+        deleteButton.setEnabled(true);
+        closeButton.setEnabled(false);
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -460,7 +504,7 @@ public class FBuku extends javax.swing.JFrame {
     private javax.swing.JButton saveButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
-    private javax.swing.JTextField statusField;
+    private javax.swing.JComboBox<String> statusField;
     private javax.swing.JTextField titleField;
     private javax.swing.JTextField writerField;
     // End of variables declaration//GEN-END:variables
