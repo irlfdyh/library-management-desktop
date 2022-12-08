@@ -57,6 +57,25 @@ public class FBuku extends javax.swing.JFrame {
         getBooks();
     }
     
+    private void assignDataTableFromResult(ResultSet rs) throws SQLException {
+        String bookCode, bookTitle, bookWriter, bookPublisher, bookPublishYear, bookStatus;
+        bookCode = rs.getString("kode_buku");
+        bookTitle = rs.getString("judul_buku");
+        bookWriter = rs.getString("penulis");
+        bookPublisher = rs.getString("penerbit");
+        bookPublishYear = rs.getString("tahun_terbit");
+        bookStatus = rs.getString("status");
+        Object Data[] = {bookCode, bookTitle, bookWriter, bookPublisher, bookPublishYear, bookStatus};
+        tabModel.addRow(Data);   
+    }
+    
+    private void clearDataTable() {
+        int row = tabModel.getRowCount();
+        for (int i = 0; i < row; i++) {
+            tabModel.removeRow(0);
+        }
+    }
+    
      private void getDataFromDataTable() {        
         int row = bookDataTable.getSelectedRow();
         String bookCode = tabModel.getValueAt(row, 0).toString();
@@ -83,16 +102,8 @@ public class FBuku extends javax.swing.JFrame {
             String query = "SELECT * FROM buku";
             PreparedStatement statement = conn.prepareStatement(query);
             ResultSet rs = statement.executeQuery();
-            String bookCode, bookTitle, bookWriter, bookPublisher, bookPublishYear, bookStatus;
             while (rs.next()) {
-                bookCode = rs.getString("kode_buku");
-                bookTitle = rs.getString("judul_buku");
-                bookWriter = rs.getString("penulis");
-                bookPublisher = rs.getString("penerbit");
-                bookPublishYear = rs.getString("tahun_terbit");
-                bookStatus = rs.getString("status");
-                Object Data[] = {bookCode, bookTitle, bookWriter, bookPublisher, bookPublishYear, bookStatus};
-                tabModel.addRow(Data);
+                assignDataTableFromResult(rs);
             }
         } catch (SQLException sqlE) {
             System.out.println("Proses Query Gagal = " + sqlE);
@@ -184,6 +195,41 @@ public class FBuku extends javax.swing.JFrame {
         }   
     }
     
+    private void searchBooks() {
+        String query;
+        int selectedOption = cbQueryType.getSelectedIndex();
+        
+        try {
+            switch (selectedOption) {
+                case 0: {
+                    query = "SELECT * FROM buku WHERE kode_buku = '"+ searchField.getText() +"'";
+                    break;
+                }
+                case 1: {
+                    query = "SELECT * FROM buku WHERE judul_buku LIKE '%"+ searchField.getText() +"%'";
+                    break;
+                }
+                case 2: {
+                    query = "SELECT * FROM buku WHERE penulis LIKE '%"+ searchField.getText() +"%'";
+                    break;
+                }
+                default: {
+                    query = "SELECT * FROM buku WHERE kode_buku = '"+ searchField.getText() +"'";
+                    break;
+                }
+            }
+            
+            PreparedStatement statement = conn.prepareStatement(query);
+            ResultSet rs = statement.executeQuery();
+            clearDataTable();
+            while (rs.next()) {
+                assignDataTableFromResult(rs);
+            }
+        } catch (SQLException e) {
+
+        }
+    }
+    
     /**
      * Text field modifier
      */
@@ -245,10 +291,11 @@ public class FBuku extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         bookDataTable = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbQueryType = new javax.swing.JComboBox<>();
         searchField = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
         statusField = new javax.swing.JComboBox<>();
+        refreshButton = new javax.swing.JButton();
 
         jLabel7.setText("jLabel7");
 
@@ -318,7 +365,7 @@ public class FBuku extends javax.swing.JFrame {
 
         jLabel8.setText("Cari Berdasarkan");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kode Buku", "Judul Buku", "Penulis" }));
+        cbQueryType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kode Buku", "Judul Buku", "Penulis" }));
 
         searchButton.setText("Cari");
         searchButton.addActionListener(new java.awt.event.ActionListener() {
@@ -328,6 +375,13 @@ public class FBuku extends javax.swing.JFrame {
         });
 
         statusField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tersedia", "Tidak Tersedia" }));
+
+        refreshButton.setText("Refresh");
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -339,23 +393,11 @@ public class FBuku extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbQueryType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(searchField)
+                        .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(searchButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(addButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(editButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(saveButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(deleteButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(cancelButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(closeButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -380,8 +422,21 @@ public class FBuku extends javax.swing.JFrame {
                             .addComponent(publisherField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(publishYearField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(statusField, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(refreshButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(addButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(editButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(saveButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(deleteButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(cancelButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(closeButton))
                     .addComponent(jScrollPane1))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -412,12 +467,14 @@ public class FBuku extends javax.swing.JFrame {
                     .addComponent(addButton)
                     .addComponent(saveButton)
                     .addComponent(deleteButton))
-                .addGap(33, 33, 33)
+                .addGap(26, 26, 26)
+                .addComponent(refreshButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbQueryType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -488,8 +545,12 @@ public class FBuku extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        // TODO add your handling code here:
+        searchBooks();
     }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        getBooks();
+    }//GEN-LAST:event_refreshButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -530,11 +591,11 @@ public class FBuku extends javax.swing.JFrame {
     private javax.swing.JButton addButton;
     private javax.swing.JTable bookDataTable;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JComboBox<String> cbQueryType;
     private javax.swing.JButton closeButton;
     private javax.swing.JTextField codeField;
     private javax.swing.JButton deleteButton;
     private javax.swing.JButton editButton;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -546,6 +607,7 @@ public class FBuku extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField publishYearField;
     private javax.swing.JTextField publisherField;
+    private javax.swing.JButton refreshButton;
     private javax.swing.JButton saveButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
