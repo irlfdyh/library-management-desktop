@@ -23,7 +23,7 @@ public class FPeminjaman extends javax.swing.JFrame {
     Connection conn;
     
     DefaultTableModel tabModel;
-
+    
     /**
      * Creates new form FPeminjaman
      */
@@ -347,9 +347,9 @@ public class FPeminjaman extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteBookButtonActionPerformed
 
     private void addLoanButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLoanButtonActionPerformed
-        Date tgl_sekarang=new Date();
-        SimpleDateFormat format=new SimpleDateFormat("y-m-d");
-        String tgl=format.format(tgl_sekarang);
+        Date currentDate = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
+        String tgl = format.format(currentDate);
         txtTglPinjam.setText(tgl);
         txtNoPinjam.setEnabled(true);
         txtNoAnggota.setEnabled(true);

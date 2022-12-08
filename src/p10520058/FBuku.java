@@ -554,6 +554,7 @@ public class FBuku extends javax.swing.JFrame {
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        clearDataTable();
         getBooks();
     }//GEN-LAST:event_refreshButtonActionPerformed
 
