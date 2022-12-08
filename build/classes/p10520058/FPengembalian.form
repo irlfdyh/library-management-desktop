@@ -115,6 +115,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="loanNumberField">
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="loanNumberFieldKeyPressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="loanDateField">
       <Properties>
@@ -287,6 +290,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Batal"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="closeButton">
       <Properties>

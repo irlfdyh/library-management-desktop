@@ -4,17 +4,30 @@
  */
 package p10520058;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author admin
  */
 public class FPengembalian extends javax.swing.JFrame {
+    
+    Connection conn;
+    
+    DefaultTableModel tabModel;
 
     /**
      * Creates new form FPengembalian
      */
     public FPengembalian() {
         initComponents();
+        setupConnection();
+        setupBookDataTable();
     }
 
     /**
@@ -64,6 +77,12 @@ public class FPengembalian extends javax.swing.JFrame {
         jLabel1.setText("No Pinjam");
 
         jLabel2.setText("Tanggal Pinjam");
+
+        loanNumberField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                loanNumberFieldKeyPressed(evt);
+            }
+        });
 
         loanDateField.setEditable(false);
 
@@ -160,6 +179,11 @@ public class FPengembalian extends javax.swing.JFrame {
         confirmButton.setText("Konfirmasi");
 
         cancelButton.setText("Batal");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         closeButton.setText("Tutup");
         closeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -224,6 +248,26 @@ public class FPengembalian extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_closeButtonActionPerformed
 
+    private void loanNumberFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loanNumberFieldKeyPressed
+        if (evt.getKeyCode() == 10) {
+            String loanNumber = loanNumberField.getText();
+            if (!loanNumber.isBlank()) {
+                getRequiredData(loanNumber);
+            } else {
+                JOptionPane.showMessageDialog(
+                    this, 
+                    "Nomor peminjaman belum terisi!!",
+                    "Informasi",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        }
+    }//GEN-LAST:event_loanNumberFieldKeyPressed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        clearAssignedData();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -257,6 +301,103 @@ public class FPengembalian extends javax.swing.JFrame {
                 new FPengembalian().setVisible(true);
             }
         });
+    }
+    
+    /**
+     * Setup method
+     */
+    
+    private void setupConnection() {
+        conn = Koneksi.getConnection();
+    }
+    
+      private void setupBookDataTable() {
+        String[] columnTitle = {"Kode Buku","Judul"};
+        tabModel = new DefaultTableModel(null, columnTitle ) {
+            boolean[] canEdit = new boolean [] { false, false };
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        };
+        bookDataTable.setModel(tabModel);
+        bookDataTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+        bookDataTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+    }
+    
+    /**
+     * Database call method
+     */
+    
+    private void getRequiredData(String loanNumber) {
+        try {
+            String query = "SELECT * FROM pinjam WHERE no_pinjam = ?";
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, loanNumber);
+           
+            ResultSet result = statement.executeQuery();
+            
+            while (result.next()) {
+                loanDateField.setText(result.getString("tgl_pinjam"));
+                getMemberData(result.getString("no_anggota"));
+                getLoanBooks(loanNumber);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(
+                this, 
+                e.getMessage(),
+                "Terjadi Kesalahan",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
+    
+    private void getLoanBooks(String loanNumber) throws SQLException {
+        String query = "SELECT * FROM detail_pinjam INNER JOIN buku ON buku.kode_buku = detail_pinjam.kode_buku WHERE no_pinjam = ?";
+        PreparedStatement statement = conn.prepareStatement(query);
+        statement.setString(1, loanNumber);
+        
+        ResultSet result = statement.executeQuery();
+        
+        while (result.next()) {
+            assignBookDataTable(result);
+        }
+    }
+    
+    private void getMemberData(String memberId) throws SQLException {
+        String query = "SELECT * FROM anggota WHERE no_anggota = ?";
+        PreparedStatement statement = conn.prepareStatement(query);
+        statement.setString(1, memberId);
+        
+        ResultSet result = statement.executeQuery();
+        
+        while (result.next()) {
+            memberNoField.setText(result.getString("no_anggota"));
+            memberNameField.setText(result.getString("nama"));
+        }
+    }
+    
+    /**
+     * Utility method
+     */
+    
+    private void assignBookDataTable(ResultSet result) throws SQLException {
+        String bookCode = result.getString("kode_buku");
+        String bookTitle = result.getString("judul_buku");
+        Object Data[] = {bookCode, bookTitle};
+        tabModel.addRow(Data);
+    }
+    
+    private void clearAssignedData() {
+        loanNumberField.setText("");
+        loanDateField.setText("");
+        memberNameField.setText("");
+        memberNoField.setText("");
+        
+        int row = tabModel.getRowCount();
+        for (int i = 0; i < row; i ++) {
+            tabModel.removeRow(0);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
