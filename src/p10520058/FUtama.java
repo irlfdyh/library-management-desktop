@@ -10,6 +10,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -230,9 +236,19 @@ public class FUtama extends javax.swing.JFrame {
         jMenu4.setText("Laporan");
 
         menuItemBorrowingReport.setText("Peminjaman");
+        menuItemBorrowingReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemBorrowingReportActionPerformed(evt);
+            }
+        });
         jMenu4.add(menuItemBorrowingReport);
 
         menuItemReturningReport.setText("Pengembalian");
+        menuItemReturningReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemReturningReportActionPerformed(evt);
+            }
+        });
         jMenu4.add(menuItemReturningReport);
 
         jMenuBar1.add(jMenu4);
@@ -246,17 +262,12 @@ public class FUtama extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4)
-                        .addGap(40, 40, 40))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel6))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -272,16 +283,16 @@ public class FUtama extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(jLabel4))
-                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel8))
-                            .addComponent(jLabel7))))
+                            .addComponent(jLabel7)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel4)))
                 .addGap(26, 26, 26)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(65, 65, 65)
@@ -365,6 +376,36 @@ public class FUtama extends javax.swing.JFrame {
         fPengembalian.setVisible(true);
     }//GEN-LAST:event_menuItemReturningActionPerformed
 
+    private void menuItemBorrowingReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemBorrowingReportActionPerformed
+        previewBorrowingData();
+    }//GEN-LAST:event_menuItemBorrowingReportActionPerformed
+
+    private void menuItemReturningReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemReturningReportActionPerformed
+        previewReturningData();
+    }//GEN-LAST:event_menuItemReturningReportActionPerformed
+
+    private void previewBorrowingData() {
+        try {
+            String reportPath = "/home/irlfdyh/JaspersoftWorkspace/MyReports/Peminjaman.jrxml";
+            JasperReport jr = JasperCompileManager.compileReport(reportPath);
+            JasperPrint jp = JasperFillManager.fillReport(jr,null, conn);
+            JasperViewer.viewReport(jp, false);
+        } catch (JRException e) {
+            // Do something here
+        }
+    }
+    
+    private void previewReturningData() {
+        try {
+            String reportPath = "/home/irlfdyh/JaspersoftWorkspace/MyReports/Pengembalian.jrxml";
+            JasperReport jr = JasperCompileManager.compileReport(reportPath);
+            JasperPrint jp = JasperFillManager.fillReport(jr,null, conn);
+            JasperViewer.viewReport(jp, false);
+        } catch (JRException e) {
+            // Do something here
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */

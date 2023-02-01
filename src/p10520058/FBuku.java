@@ -12,6 +12,12 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -260,6 +266,20 @@ public class FBuku extends javax.swing.JFrame {
         publishYearField.setEnabled(false);
         statusField.setEnabled(false);
     }
+    
+    /**
+     * Utilities
+     */
+    private void previewData() {
+        try {
+            String reportPath = "/home/irlfdyh/JaspersoftWorkspace/MyReports/Buku.jrxml";
+            JasperReport jr = JasperCompileManager.compileReport(reportPath);
+            JasperPrint jp = JasperFillManager.fillReport(jr,null, conn);
+            JasperViewer.viewReport(jp, false);
+        } catch (JRException e) {
+            // Do something here
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -296,6 +316,7 @@ public class FBuku extends javax.swing.JFrame {
         searchButton = new javax.swing.JButton();
         statusField = new javax.swing.JComboBox<>();
         refreshButton = new javax.swing.JButton();
+        previewButton = new javax.swing.JButton();
 
         jLabel7.setText("jLabel7");
 
@@ -388,6 +409,13 @@ public class FBuku extends javax.swing.JFrame {
             }
         });
 
+        previewButton.setText("Preview");
+        previewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previewButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -427,7 +455,10 @@ public class FBuku extends javax.swing.JFrame {
                             .addComponent(publisherField, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(publishYearField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(statusField, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(refreshButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(previewButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(refreshButton))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addButton)
                         .addGap(18, 18, 18)
@@ -473,7 +504,9 @@ public class FBuku extends javax.swing.JFrame {
                     .addComponent(saveButton)
                     .addComponent(deleteButton))
                 .addGap(26, 26, 26)
-                .addComponent(refreshButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(refreshButton)
+                    .addComponent(previewButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -562,6 +595,10 @@ public class FBuku extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_closeButtonActionPerformed
 
+    private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
+        previewData();
+    }//GEN-LAST:event_previewButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -615,6 +652,7 @@ public class FBuku extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton previewButton;
     private javax.swing.JTextField publishYearField;
     private javax.swing.JTextField publisherField;
     private javax.swing.JButton refreshButton;
